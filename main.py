@@ -28,7 +28,7 @@ second = int(time.strftime("%S"))
 # permet de vérifier si l'alarme a été initialisée ou non
 alarm_hour = -1 
 alarm_minute = -1
-alarm_second = -1
+alarm_second = -1.0
 alarm_on = False
 
 time_format = "24"
@@ -43,10 +43,10 @@ while True:
         if hour == 0:
             hour = 12
             print("\r%02d:%02d:%02d AM" % (hour, minute, second), end="")
-    elif time_format == "12" and hour > 12:
-        hour -= 12
-        print("\r%02d:%02d:%02d PM" % (hour, minute, second), end="")
-    else:
+        elif time_format == "12" and hour > 12:
+            hour -= 12
+            print("\r%02d:%02d:%02d PM" % (hour, minute, second), end="")
+    if time_format == "24":
         print("\r%02d:%02d:%02d" % (hour, minute, second), end="")
     print("\r%02d:%02d:%02d" % (hour, minute, second), end="")
 
@@ -63,6 +63,10 @@ while True:
         hour = 0
     if alarm_on:
         # permet de vérifier les conditions qui vont permettre à l'alarme de s'activer
-        if hour == alarm_hour and minute == alarm_minute and second == alarm_second:
+        if hour == alarm_hour or hour == alarm_hour - 12 and minute == alarm_minute and second == alarm_second:
             print("\nAlarm! Wake up!")
             alarm_on = False
+            if alarm_hour > 12:
+                print("\r%02d:%02d:%02d PM" % (hour, minute, second), end="")
+            else:
+                print("\r%02d:%02d:%02d AM" % (hour, minute, second), end="")
